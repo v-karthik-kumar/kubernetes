@@ -17,9 +17,9 @@ spec:
         disktype: worker
       containers:
       - name: mysql
-        image: mysql:5.6
+        image: mysql:5.7
         env:
-        - name: MYSQL_ROOT_PASSWORD
+        - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: mysql-pass
@@ -34,13 +34,15 @@ spec:
             secretKeyRef:
               name: mysql-pass
               key: username
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-pass
-              key: password
         ports:
         - containerPort: 3306
           name: web
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim
                 
 
