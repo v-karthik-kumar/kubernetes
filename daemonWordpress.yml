@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: daemon-wordpress
+  labels:
+    app: wordpress-main
+spec:
+  selector:
+    matchLabels:
+      name: wordpress-main
+  template:
+    metadata:
+      labels:
+        name: wordpress-main
+    spec:
+      tolerations:
+      # this toleration is to have the daemonset runnable on master nodes
+      # remove it if your masters can't run pods
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: wordpress-main-daemon
+        image: wordpress:5.1.1-php7.3-apache
+
+      terminationGracePeriodSeconds: 30
